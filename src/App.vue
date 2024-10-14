@@ -1,8 +1,8 @@
 <template>
   <div>
-    <template v-if="this.question">
+    <template v-if="this.listOfAnswers.question">
 
-      <h1 v-html="this.question"></h1>
+      <h1 v-html="this.listOfAnswers.question"></h1>
 
       <div class="answers">
         <div class="answer" v-for="(answer, index) in this.answers" v-bind:key="index">
@@ -28,23 +28,20 @@ export default {
   data() {
 
     return {
-      listOfAnswers: undefined,
-      correctAnswer: undefined,
-      incorrectAnswers: undefined,
-      question: undefined
+      listOfAnswers: undefined
     }
 
   },
 
   computed: {
     answers() {
-      let answers = [...this.incorrectAnswers];
+      let answers = [...this.listOfAnswers.incorrectAnswers];
       const SIZE_ANSWERS = answers.length;
       const MIN_VALUE_LIST = 0;
 
       /** Realizr a ordenacao aleatoria utilizando o Random */
       let randomPosition = Math.floor(Math.random() * (SIZE_ANSWERS - MIN_VALUE_LIST + 1) + MIN_VALUE_LIST);
-      answers.splice(randomPosition, 0, this.correctAnswer);
+      answers.splice(randomPosition, 0, this.listOfAnswers.correctAnswer);
       
       return answers;
     }
@@ -63,9 +60,9 @@ export default {
 
         this.listOfAnswers.forEach(answer => {
   
-          this.question = answer.question.text;
-          this.incorrectAnswers = answer.incorrectAnswers;
-          this.correctAnswer = answer.correctAnswer
+          this.listOfAnswers.question = answer.question.text;
+          this.listOfAnswers.incorrectAnswers = answer.incorrectAnswers;
+          this.listOfAnswers.correctAnswer = answer.correctAnswer
           
         });
 
