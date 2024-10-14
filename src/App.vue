@@ -25,7 +25,26 @@ export default {
   name: 'App',
   components: {
     
+  },
+
+  // Chamada do get OpenTriviaAPI
+  created() {
+
+    const URL_OPEN_TRIVIA = "https://opentdb.com/api.php?amount=1&category=9";
+
+    this.axios.get(URL_OPEN_TRIVIA)
+      .then((response) => {
+        console.log(response.data.results);
+      })
+      .catch((error) => {
+        console.log(error)
+          if (error.status == 429) {
+            alert("Recarregar jogo")
+          }
+      })
+
   }
+
 }
 </script>
 
