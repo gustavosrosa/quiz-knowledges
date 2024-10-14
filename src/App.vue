@@ -1,20 +1,18 @@
 <template>
-
   <div>
-    <h1 v-html="this.question"></h1>
+    <template v-if="this.question">
 
-    <div class="answers">
-      <div class="answer">
-        <input type="radio" id="true" >
-        <label for="true">True</label>
-      </div>
-      <div class="answer">
-        <input type="radio" id="false" >
-        <label for="false">False</label>
-      </div>
-    </div>
+      <h1 v-html="this.question"></h1>
 
-    <button class="submit-button">Send</button>
+      <div class="answers">
+        <div class="answer" v-for="(answer, index) in this.answers" v-bind:key="index">
+          <input type="radio" value="answer">
+          <label v-html="answer"></label>
+        </div>
+      </div>
+
+      <button class="submit-button">Send</button>
+    </template>
   </div>
 
 </template>
@@ -67,10 +65,6 @@ export default {
         this.correctAnswer = randowQuestion.correct_answer
       })
       .catch((error) => {
-        console.log(error)
-          if (error.status == 429) {
-            console.log("Recarregar jogo")
-          }
       })
 
   }
