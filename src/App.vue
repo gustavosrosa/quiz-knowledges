@@ -37,6 +37,15 @@ export default {
 
   },
 
+  computed: {
+    answers() {
+      let answers = [...this.incorrectAnswers];
+      answers.push(this.correctAnswer);
+      return answers;
+    }
+    
+  },
+
   // Chamada do get OpenTriviaAPI
   created() {
 
