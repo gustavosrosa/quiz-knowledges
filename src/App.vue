@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <h1>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatum nemo atque neque pariatur minima ad temporibus ullam, beatae iste velit mollitia laudantium. Repellat delectus id sed animi laborum, recusandae perspiciatis!</h1>
+    <h1 v-html="this.question"></h1>
 
     <div class="answers">
       <div class="answer">
@@ -27,19 +27,34 @@ export default {
     
   },
 
+  data() {
+
+    return {
+      correctAnswer: undefined,
+      incorrectAnswers: undefined,
+      question: undefined
+    }
+
+  },
+
   // Chamada do get OpenTriviaAPI
   created() {
 
-    const URL_OPEN_TRIVIA = "https://opentdb.com/api.php?amount=1&category=9";
+    const URL_OPEN_TRIVIA = "https://opentdb.com/api.php?amount=1&category=9&type=multiple";
 
     this.axios.get(URL_OPEN_TRIVIA)
       .then((response) => {
-        console.log(response.data.results);
+
+        const randowQuestion = response.data.results[0];
+
+        this.question = randowQuestion.question;
+        this.incorrectAnswers = randowQuestion.incorrect_answers;
+        this.correctAnswer = randowQuestion.correct_answer
       })
       .catch((error) => {
         console.log(error)
           if (error.status == 429) {
-            alert("Recarregar jogo")
+            console.log("Recarregar jogo")
           }
       })
 
