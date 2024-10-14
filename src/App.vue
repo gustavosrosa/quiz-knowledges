@@ -28,6 +28,7 @@ export default {
   data() {
 
     return {
+      listOfAnswers: undefined,
       correctAnswer: undefined,
       incorrectAnswers: undefined,
       question: undefined
@@ -53,18 +54,23 @@ export default {
   // Chamada do get OpenTriviaAPI
   created() {
 
-    const URL_OPEN_TRIVIA = "https://opentdb.com/api.php?amount=1&category=9&type=multiple";
+    const URL_QUIZ = "https://the-trivia-api.com/v2/questions";
 
-    this.axios.get(URL_OPEN_TRIVIA)
+    this.axios.get(URL_QUIZ)
       .then((response) => {
 
-        const randowQuestion = response.data.results[0];
+        this.listOfAnswers = response.data;
 
-        this.question = randowQuestion.question;
-        this.incorrectAnswers = randowQuestion.incorrect_answers;
-        this.correctAnswer = randowQuestion.correct_answer
+        this.listOfAnswers.forEach(answer => {
+  
+          this.question = answer.question.text;
+          this.incorrectAnswers = answer.incorrectAnswers;
+          this.correctAnswer = answer.correctAnswer
+          
+        });
+
       })
-      .catch((error) => {
+      .catch(() => {
       })
 
   }
