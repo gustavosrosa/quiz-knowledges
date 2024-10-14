@@ -40,7 +40,13 @@ export default {
   computed: {
     answers() {
       let answers = [...this.incorrectAnswers];
-      answers.push(this.correctAnswer);
+      const SIZE_ANSWERS = answers.length;
+      const MIN_VALUE_LIST = 0;
+
+      /** Realizr a ordenacao aleatoria utilizando o Random */
+      let randomPosition = Math.floor(Math.random() * (SIZE_ANSWERS - MIN_VALUE_LIST + 1) + MIN_VALUE_LIST);
+      answers.splice(randomPosition, 0, this.correctAnswer);
+      
       return answers;
     }
     
