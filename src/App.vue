@@ -6,12 +6,14 @@
 
       <div class="answers">
         <div class="answer" v-for="(answer, index) in this.answers" v-bind:key="index">
-          <input type="radio" name="options" value="answer">
+          <input type="radio" name="options" v-bind:value="answer" v-model="this.selectedOption">
           <label v-html="answer"></label>
         </div>
       </div>
 
-      <button class="submit-button">Send</button>
+      <p v-if="this.showMessageForUser" v-html="this.confirmRightAfterAnswer"></p>
+
+      <button class="submit-button" @click="submitAnswer()">Send</button>
     </template>
   </div>
 
@@ -28,7 +30,10 @@ export default {
   data() {
 
     return {
-      listOfAnswers: undefined
+      listOfAnswers: undefined,
+      selectedOption: undefined,
+      currentQuestion: undefined,
+      showMessageForUser: undefined
     }
 
   },
@@ -58,11 +63,15 @@ export default {
 
         this.listOfAnswers = response.data;
 
+        console.log(response.data.length);
+
         this.listOfAnswers.forEach(answer => {
   
           this.listOfAnswers.question = answer.question.text;
           this.listOfAnswers.incorrectAnswers = answer.incorrectAnswers;
           this.listOfAnswers.correctAnswer = answer.correctAnswer
+
+          this.currentQuestion = answer;
           
         });
 
@@ -70,7 +79,28 @@ export default {
       .catch(() => {
       })
 
+  },
+  updated() {
+
+    this.showMessageForUser = false;
+  
+    if (this.selectedOption == this.currentQuestion.correctAnswer) {
+      console.log("AAAA")
+      this.confirmRightAfterAnswer = "Congratulations!"
+      return;
+    }
+
+    this.confirmRightAfterAnswer = "You failed! Do your best in the next question! I believe in you.."
+    
+  },
+  methods: {
+    submitAnswer() {
+      this.showMessageForUser = true;
+      console.log(this.showMessageForUser)
+    }
   }
+
+  
 
 }
 </script>
