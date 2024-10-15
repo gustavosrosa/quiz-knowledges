@@ -34,7 +34,7 @@ export default {
   data() {
 
     return {
-      question: undefined,
+      question: {},
       selectedOption: undefined,
       answerSubmitted: false,
       isCorrectAnswer: false
@@ -44,13 +44,20 @@ export default {
 
   computed: {
     answers() {
-      let answers = [...this.question.incorrectAnswers];
-      const SIZE_ANSWERS = answers.length;
-      const MIN_VALUE_LIST = 0;
 
-      /** Realizr a ordenacao aleatoria utilizando o Random */
-      let randomPosition = Math.floor(Math.random() * (SIZE_ANSWERS - MIN_VALUE_LIST + 1) + MIN_VALUE_LIST);
-      answers.splice(randomPosition, 0, this.question.correctAnswer);
+      let answers = [];
+      
+      if (this.question) {
+        let allAnswers = [...this.question.incorrectAnswers];
+        const SIZE_ANSWERS = allAnswers.length;
+        const MIN_VALUE_LIST = 0;
+
+        /** Realizr a ordenacao aleatoria utilizando o Random */
+        let randomPosition = Math.floor(Math.random() * (SIZE_ANSWERS - MIN_VALUE_LIST + 1) + MIN_VALUE_LIST);
+        allAnswers.splice(randomPosition, 0, this.question.correctAnswer);
+
+        answers = allAnswers;
+      }
 
       return answers;
     }
@@ -63,8 +70,6 @@ export default {
     const URL_QUIZ = "https://the-trivia-api.com/v2/questions?limit=1";
 
     this.axios.get(URL_QUIZ).then((response) => {
-
-      this.question = response.data;
 
       response.data.forEach(answer => {
 
