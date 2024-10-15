@@ -6,7 +6,7 @@
 
       <div class="answers">
         <div class="answer" v-for="(answer, index) in this.answers" v-bind:key="index">
-          <input type="radio" value="answer">
+          <input type="radio" name="options" value="answer">
           <label v-html="answer"></label>
         </div>
       </div>
