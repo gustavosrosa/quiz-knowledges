@@ -6,13 +6,19 @@
 
       <div class="answers">
         <div class="answer" v-for="(answer, index) in this.answers" v-bind:key="index">
-          <input type="radio" name="options" v-bind:value="answer" v-model="this.selectedOption">
+          <input type="radio"
+          :disabled="this.answerSubmitted"
+           name="options" 
+           v-bind:value="answer" 
+           v-model="this.selectedOption">
           <label v-html="answer"></label>
         </div>
       </div>
 
-      <p v-if="this.showMessageForUser" v-html="this.confirmRightAfterAnswer"></p>
-
+      <section>
+        <p v-bind:class="{'correct-answer': this.isCorrectAnswer, 'incorrect-answer': !this.isCorrectAnswer}" v-if="this.answerSubmitted" v-html="this.confirmRightAfterAnswer"></p>
+      </section>
+      
       <button class="submit-button" @click="submitAnswer()">Send</button>
     </template>
   </div>
@@ -33,7 +39,8 @@ export default {
       listOfAnswers: undefined,
       selectedOption: undefined,
       currentQuestion: undefined,
-      showMessageForUser: undefined
+      answerSubmitted: false,
+      isCorrectAnswer: false
     }
 
   },
@@ -80,23 +87,20 @@ export default {
       })
 
   },
-  updated() {
 
-    this.showMessageForUser = false;
-  
-    if (this.selectedOption == this.currentQuestion.correctAnswer) {
-      console.log("AAAA")
-      this.confirmRightAfterAnswer = "Congratulations!"
-      return;
-    }
-
-    this.confirmRightAfterAnswer = "You failed! Do your best in the next question! I believe in you.."
-    
-  },
   methods: {
+    
     submitAnswer() {
-      this.showMessageForUser = true;
-      console.log(this.showMessageForUser)
+
+      if (this.selectedOption == this.currentQuestion.correctAnswer) {
+        this.confirmRightAfterAnswer = "Congratulations!";
+        this.isCorrectAnswer = true;
+      } else {
+        this.confirmRightAfterAnswer = "You failed! Do your best in the next question! I believe in you..";
+        this.isCorrectAnswer = false;
+      }
+
+      this.answerSubmitted = true;
     }
   }
 
@@ -121,6 +125,14 @@ export default {
   text-align: center;
   justify-content: center;
   flex-direction: column;
+}
+
+.correct-answer {
+  color: #1B512D;
+}
+
+.incorrect-answer {
+  color: #E43F6F;
 }
 
 .answer {
