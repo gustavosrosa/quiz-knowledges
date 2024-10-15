@@ -47,7 +47,7 @@ export default {
 
       let answers = [];
       
-      if (this.question.incorrectAnswers) {
+      if (this.question) {
         let allAnswers = [...this.question.incorrectAnswers];
         const SIZE_ANSWERS = allAnswers.length;
         const MIN_VALUE_LIST = 0;
