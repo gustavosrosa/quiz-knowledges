@@ -17,7 +17,9 @@
           v-if="this.answerSubmitted" v-html="this.confirmRightAfterAnswer"></p>
       </section>
 
-      <button class="submit-button" @click="submitAnswer()">Send</button>
+      <button class="submit-button" 
+        :class="{'disabled-button': this.submitButtonDisabled, 'enabled-button': !this.submitButtonDisabled}" 
+        :disabled="this.submitButtonDisabled" @click="submitAnswer()">Send</button>
     </template>
   </div>
 
@@ -37,6 +39,7 @@ export default {
       question: {},
       selectedOption: undefined,
       answerSubmitted: false,
+      submitButtonDisabled: true,
       isCorrectAnswer: false
     }
 
@@ -63,6 +66,9 @@ export default {
     }
 
   },
+  updated() {
+    this.submitButtonDisabled = false;
+  },   
 
   // Chamada do get OpenTriviaAPI
   beforeCreate() {
@@ -83,6 +89,10 @@ export default {
 
   },
 
+  beforeUnmount() {
+    this.question = {}
+  },
+
   methods: {
 
     submitAnswer() {
@@ -96,6 +106,7 @@ export default {
       }
 
       this.answerSubmitted = true;
+      
     }
   }
 
@@ -105,13 +116,24 @@ export default {
 </script>
 
 <style lang="scss">
+
+:root {
+  --color-correct-answer: #1B512D;
+  --color-incorrect-answer: #E43F6F;
+  --color-default-app: #2C3E50;
+  --color-white: #FFFFFF;
+  --color-enabled-button: blue;
+  --color-disabled-button: #CCCCCC;
+
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   margin: 0 auto;
-  color: #2c3e50;
+  color: var(--color-default-app);
   margin-top: 60px;
   max-width: 960px;
 }
@@ -123,21 +145,28 @@ export default {
 }
 
 .correct-answer {
-  color: #1B512D;
+  color: var(--color-correct-answer);
 }
 
 .incorrect-answer {
-  color: #E43F6F;
+  color: var(--color-incorrect-answer);
 }
 
 .answer {
   padding-bottom: 1em;
 }
 
+.disabled-button {
+  background-color: var(--color-disabled-button);
+}
+
+.enabled-button {
+  background-color: var(--color-enabled-button);
+}
+
 .submit-button {
   padding: 1em 4em;
-  background-color: blue;
-  color: #FFFFFF;
+  color: var(--color-white);
   border-radius: .75em;
   font-weight: bold;
 }
