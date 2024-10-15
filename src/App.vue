@@ -1,20 +1,18 @@
 <template>
-
   <div>
-    <h1>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatum nemo atque neque pariatur minima ad temporibus ullam, beatae iste velit mollitia laudantium. Repellat delectus id sed animi laborum, recusandae perspiciatis!</h1>
+    <template v-if="this.listOfAnswers.question">
 
-    <div class="answers">
-      <div class="answer">
-        <input type="radio" id="true" >
-        <label for="true">True</label>
-      </div>
-      <div class="answer">
-        <input type="radio" id="false" >
-        <label for="false">False</label>
-      </div>
-    </div>
+      <h1 v-html="this.listOfAnswers.question"></h1>
 
-    <button class="submit-button">Send</button>
+      <div class="answers">
+        <div class="answer" v-for="(answer, index) in this.answers" v-bind:key="index">
+          <input type="radio" value="answer">
+          <label v-html="answer"></label>
+        </div>
+      </div>
+
+      <button class="submit-button">Send</button>
+    </template>
   </div>
 
 </template>
@@ -25,7 +23,55 @@ export default {
   name: 'App',
   components: {
     
+  },
+
+  data() {
+
+    return {
+      listOfAnswers: undefined
+    }
+
+  },
+
+  computed: {
+    answers() {
+      let answers = [...this.listOfAnswers.incorrectAnswers];
+      const SIZE_ANSWERS = answers.length;
+      const MIN_VALUE_LIST = 0;
+
+      /** Realizr a ordenacao aleatoria utilizando o Random */
+      let randomPosition = Math.floor(Math.random() * (SIZE_ANSWERS - MIN_VALUE_LIST + 1) + MIN_VALUE_LIST);
+      answers.splice(randomPosition, 0, this.listOfAnswers.correctAnswer);
+      
+      return answers;
+    }
+    
+  },
+
+  // Chamada do get OpenTriviaAPI
+  created() {
+
+    const URL_QUIZ = "https://the-trivia-api.com/v2/questions";
+
+    this.axios.get(URL_QUIZ)
+      .then((response) => {
+
+        this.listOfAnswers = response.data;
+
+        this.listOfAnswers.forEach(answer => {
+  
+          this.listOfAnswers.question = answer.question.text;
+          this.listOfAnswers.incorrectAnswers = answer.incorrectAnswers;
+          this.listOfAnswers.correctAnswer = answer.correctAnswer
+          
+        });
+
+      })
+      .catch(() => {
+      })
+
   }
+
 }
 </script>
 

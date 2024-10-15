@@ -7,5 +7,6 @@ import VueAxios from 'vue-axios'
 import App from './App.vue'
 
 createApp(App)
+    .use(VueAxios, axios) // Usar o .use antes de carregar a aplicação
     .mount('#app')
-    .use(VueAxios, axios)
+    
