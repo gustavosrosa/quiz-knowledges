@@ -1,24 +1,22 @@
 <template>
   <div>
-    <template v-if="this.listOfAnswers.question">
+    <template v-if="this.question">
 
-      <h1 v-html="this.listOfAnswers.question"></h1>
+      <h1 v-html="this.question.text"></h1>
 
       <div class="answers">
         <div class="answer" v-for="(answer, index) in this.answers" v-bind:key="index">
-          <input type="radio"
-          :disabled="this.answerSubmitted"
-           name="options" 
-           v-bind:value="answer" 
-           v-model="this.selectedOption">
+          <input type="radio" :disabled="this.answerSubmitted" name="options" v-bind:value="answer"
+            v-model="this.selectedOption">
           <label v-html="answer"></label>
         </div>
       </div>
 
       <section>
-        <p v-bind:class="{'correct-answer': this.isCorrectAnswer, 'incorrect-answer': !this.isCorrectAnswer}" v-if="this.answerSubmitted" v-html="this.confirmRightAfterAnswer"></p>
+        <p v-bind:class="{ 'correct-answer': this.isCorrectAnswer, 'incorrect-answer': !this.isCorrectAnswer }"
+          v-if="this.answerSubmitted" v-html="this.confirmRightAfterAnswer"></p>
       </section>
-      
+
       <button class="submit-button" @click="submitAnswer()">Send</button>
     </template>
   </div>
@@ -30,15 +28,14 @@
 export default {
   name: 'App',
   components: {
-    
+
   },
 
   data() {
 
     return {
-      listOfAnswers: undefined,
+      question: undefined,
       selectedOption: undefined,
-      currentQuestion: undefined,
       answerSubmitted: false,
       isCorrectAnswer: false
     }
@@ -47,52 +44,45 @@ export default {
 
   computed: {
     answers() {
-      let answers = [...this.listOfAnswers.incorrectAnswers];
+      let answers = [...this.question.incorrectAnswers];
       const SIZE_ANSWERS = answers.length;
       const MIN_VALUE_LIST = 0;
 
       /** Realizr a ordenacao aleatoria utilizando o Random */
       let randomPosition = Math.floor(Math.random() * (SIZE_ANSWERS - MIN_VALUE_LIST + 1) + MIN_VALUE_LIST);
-      answers.splice(randomPosition, 0, this.listOfAnswers.correctAnswer);
-      
+      answers.splice(randomPosition, 0, this.question.correctAnswer);
+
       return answers;
     }
-    
+
   },
 
   // Chamada do get OpenTriviaAPI
-  created() {
+  beforeCreate() {
 
-    const URL_QUIZ = "https://the-trivia-api.com/v2/questions";
+    const URL_QUIZ = "https://the-trivia-api.com/v2/questions?limit=1";
 
-    this.axios.get(URL_QUIZ)
-      .then((response) => {
+    this.axios.get(URL_QUIZ).then((response) => {
 
-        this.listOfAnswers = response.data;
+      this.question = response.data;
 
-        console.log(response.data.length);
+      response.data.forEach(answer => {
 
-        this.listOfAnswers.forEach(answer => {
-  
-          this.listOfAnswers.question = answer.question.text;
-          this.listOfAnswers.incorrectAnswers = answer.incorrectAnswers;
-          this.listOfAnswers.correctAnswer = answer.correctAnswer
+        this.question.text = answer.question.text;
+        this.question.incorrectAnswers = answer.incorrectAnswers;
+        this.question.correctAnswer = answer.correctAnswer
 
-          this.currentQuestion = answer;
-          
-        });
+      });
 
-      })
-      .catch(() => {
-      })
+    })
 
   },
 
   methods: {
-    
+
     submitAnswer() {
 
-      if (this.selectedOption == this.currentQuestion.correctAnswer) {
+      if (this.selectedOption == this.question.correctAnswer) {
         this.confirmRightAfterAnswer = "Congratulations!";
         this.isCorrectAnswer = true;
       } else {
@@ -104,7 +94,7 @@ export default {
     }
   }
 
-  
+
 
 }
 </script>
